@@ -21,9 +21,9 @@
       <!--div-->
     </div>
     <div v-if="listaClipsDeAudio.length != 0" class="app-player">
-      <fu-player ref="reproductor"
+      <fu-player
+        ref="reproductor"
         :listaDeClipsDelCanalSeleccionado="cargarPrimerClip"
-        
       ></fu-player>
     </div>
   </div>
@@ -52,13 +52,6 @@ export default {
     return {
       listadePodcasts: [], //en realidad hace referencia a una lista de canales.
       listaClipsDeAudio: [], //es la lista de clips de audio que dispone el canal seleccionado (se obtuvo a través de la función obtenerAudioPorID() ).
-      /*podcast: {
-        name: "US Open Day 14 Preview",
-        album: "Courtside: The Official Podcast of the US Open",
-        url: "https://audioboom.com/posts/7000554-us-open-day-14-preview.mp3",
-        image_url: "https://images.theabcdn.com/i/33251592",
-        duration: 1651.04,
-      },*/
       canalSeleccionadoPorUsuario: "nombre canal",
     };
   },
@@ -70,13 +63,16 @@ export default {
     },
   },
   methods: {
-    async cambiandoCanal() {
-      await this.$refs.reproductor.cambiarDeCanal();
+    cambiandoCanal() {
+      try {
+        //esto fue un intento de hacer que el componente hijo detenga la reproduccion e inicie la reproducción de un nuevo canal
+        console.log("enviando la orden de cambiar el canal...");
+        this.$refs.reproductor.cambiarDeCanal(); //esta llamada a procedimiento genera un error en el primer intento, hasta que cachea la direccion de destino
+      } catch (error) {
+        console.log("El destino tardó en alcanzarse, reintente. Ref: " + error);
+      }
     },
-    /*canalSeleccionado(canal){
-      this.canalSeleccionadoPorUsuario=canal;
-      console.log("App recibió canal: "+this.canalSeleccionadoPorUsuario);
-    },*/
+
     async obtenerIDPodcastSeleccionado(podcast) {
       //"podcast" hacer referencia a un canal
       const { id } = podcast;
