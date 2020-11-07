@@ -101,11 +101,17 @@ export default {
       volumePodcastTemp: 1,
     };
   },
- 
+
   methods: {
     handlePodcast() {
       if (this.audio.paused) {
-        this.audio.play();
+        try {
+          this.audio.play();
+        } catch (error) {
+          console.log(
+            "El usuario interrumpió la descarga para reproducir otro clip"
+          );
+        }
         this.isPaused = false;
       } else {
         this.audio.pause();
@@ -144,7 +150,7 @@ export default {
       this.cambiarDeCancion();*/
     },
 
-   cambiarDeCancion() {
+    cambiarDeCancion() {
       this.audio = new Audio(
         this.listaDeClipsDelCanalSeleccionado[
           this.clipEnReproduccion
@@ -157,12 +163,18 @@ export default {
           this.listaDeClipsDelCanalSeleccionado[this.clipEnReproduccion].channel
             .title
       );
-      this.audio.play();
+      try {
+        this.audio.play();
+      } catch (error) {
+        console.log(
+          "El usuario interrumpió la descarga para reproducir otro clip"
+        );
+      }
+
       this.isPaused = false;
     },
 
     setVolume() {
-      //console.log(this.volumePodcast);
       this.audio.volume = this.volumePodcast / 100;
       //el codigo de ejemplo ocurria un error si reproducimos->bajamos volume a CERO con el range->click en "desmutear". entonces, para emplear el "volumePodcastTemp", valido si, anteriormente, fue puesto en CERO de forma manual.
       if (this.volumePodcast == 0) {
@@ -192,13 +204,6 @@ export default {
           this.volumePodcastTemp = this.volumePodcast;
           this.volumePodcast = 0;
           this.audio.muted = true;
-          console.log(
-            this.audio.muted +
-              " " +
-              this.volumePodcast +
-              " " +
-              this.volumePodcastTemp
-          ); //probando en consola
           return;
         }
       } else {
@@ -207,18 +212,10 @@ export default {
         this.volumePodcastTemp = 5;
       }
       this.setVolume();
-      console.log(
-        this.audio.muted +
-          " " +
-          this.volumePodcast +
-          " " +
-          this.volumePodcastTemp
-      ); //probando en consola
     },
   },
- computed: {
+  computed: {
     cargarInformacionClip() {
-      //superviso las modificaciones a la listaDeClipsDelCanalSeleccionado.
       return this.listaDeClipsDelCanalSeleccionado;
     },
   },
@@ -316,7 +313,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
- /* border-radius: 50%;*/
+  /* border-radius: 50%;*/
   cursor: pointer;
 }
 
